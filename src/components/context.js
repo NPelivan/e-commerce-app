@@ -7,7 +7,7 @@ class ProductProvider extends Component {
 	state = {
 		products: [],
 		cart: [],
-		cartTotal: 0,
+		cartTotalTotal: 0,
 	};
 
 	componentDidMount() {
@@ -39,9 +39,14 @@ class ProductProvider extends Component {
 		const price = product.price;
 		product.total = price;
 
-		this.setState(() => {
-			return { products: tempProducts, cart: [...this.state.cart, product] };
-		});
+		this.setState(
+			() => {
+				return { products: tempProducts, cart: [...this.state.cart, product] };
+			},
+			() => {
+				this.addTotals();
+			}
+		);
 	};
 
 	increment = (id) => {
@@ -53,11 +58,16 @@ class ProductProvider extends Component {
 		product.count = product.count + 1;
 		product.total = product.count * product.price;
 
-		this.setState(() => {
-			return {
-				cart: [...tempCart],
-			};
-		});
+		this.setState(
+			() => {
+				return {
+					cart: [...tempCart],
+				};
+			},
+			() => {
+				this.addTotals();
+			}
+		);
 	};
 
 	decrement = (id) => {
@@ -72,11 +82,16 @@ class ProductProvider extends Component {
 			this.removeItem(id);
 		} else {
 			product.total = product.count * product.price;
-			this.setState(() => {
-				return {
-					cart: [...tempCart],
-				};
-			});
+			this.setState(
+				() => {
+					return {
+						cart: [...tempCart],
+					};
+				},
+				() => {
+					this.addTotals();
+				}
+			);
 		}
 	};
 
@@ -92,12 +107,17 @@ class ProductProvider extends Component {
 		removedProduct.count = 0;
 		removedProduct.total = 0;
 
-		this.setState(() => {
-			return {
-				cart: [...tempCart],
-				products: [...tempProducts],
-			};
-		});
+		this.setState(
+			() => {
+				return {
+					cart: [...tempCart],
+					products: [...tempProducts],
+				};
+			},
+			() => {
+				this.addTotals();
+			}
+		);
 	};
 
 	clearCart = () => {
@@ -109,8 +129,20 @@ class ProductProvider extends Component {
 			},
 			() => {
 				this.setProducts();
+				this.addTotals();
 			}
 		);
+	};
+
+	addTotals = () => {
+		let totalTotal = 0;
+		this.state.cart.map((item) => (totalTotal += item.total));
+
+		this.setState(() => {
+			return {
+				cartTotalTotal: totalTotal,
+			};
+		});
 	};
 
 	render() {

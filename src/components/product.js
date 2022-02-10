@@ -11,10 +11,11 @@ export default class Product extends Component {
 					{(value) => (
 						<div>
 							<span>Name: {name}</span>
-							<span>Price: {price}</span>
+							<span>Price: {price}EUR</span>
 							<button
 								disabled={inCart ? true : false}
 								onClick={() => {
+									debugger;
 									value.addToCart(id);
 								}}
 							>
@@ -27,3 +28,12 @@ export default class Product extends Component {
 		);
 	}
 }
+
+Product.propTypes = {
+	product: PropTypes.shape({
+		id: PropTypes.number,
+		name: PropTypes.string,
+		price: PropTypes.number,
+		inCart: PropTypes.bool,
+	}).isRequired,
+};
